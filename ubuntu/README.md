@@ -3,6 +3,6 @@
 * nano
 * git
 * zsh
-* oh-my-zsh
-  * theme: bira
-  * plugins: z
+  * oh-my-zsh
+    * theme: bira
+    * plugins: z
