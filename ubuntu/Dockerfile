@@ -6,7 +6,6 @@ RUN apt-get update
 
 # Manual setups
 RUN mkdir ~/.local
-RUN touch ~/.z
 
 # Install main programs
 RUN apt-get install -y \
@@ -19,6 +18,7 @@ RUN git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
 RUN cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
 RUN sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="bira"/g' ~/.zshrc
 RUN sed -i 's/  git/  z/g' ~/.zshrc
+RUN touch ~/.z
 
 # Default directory
 WORKDIR '/home'
