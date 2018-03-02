@@ -20,6 +20,22 @@ RUN \
   java -version > /home/software.vesion 2>&1 && \
   javac -version >> /home/software.vesion 2>&1
 
+# 5 Install Scala
+RUN \
+  echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list && \
+  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823 && \
+  apt-get update && apt-get install -y sbt
+
+# 6 Generate Scala test
+RUN mkdir scala_example
+WORKDIR /home/scala_example
+RUN \
+  echo 'name := "Hello Scala"\nversion := "1.0"\nscalaVersion := "2.12.4"' > build.sbt && \
+  echo 'object HelloScala {\n\tdef main(args: Array[String]): Unit = {\n\t\tprintln("Hello Scala!")\n\t}\n}' > main.scala && \
+  sbt run && \
+  sbt sbtVersion >> /home/software.vesion 2>&1 && \
+  sbt scalaVersion >> /home/software.vesion 2>&1
+
 # n-2 Install and configure Oh My Zsh (install all with bash first for compatibility)
 RUN  \
   apt-get update && apt-get install -y zsh && \

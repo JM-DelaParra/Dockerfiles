@@ -1,41 +1,31 @@
-# Download base image Ubuntu 18.04
+# 1 Download base image Ubuntu 18.04
 FROM ubuntu:18.04
 
-# Update Ubuntu repositories
-RUN apt-get update
-
-# Manual setups
+# 2 Manual setups
 RUN mkdir ~/.local
 
-# Install main programs
-RUN apt-get install -y \
+# 3 Install main programs
+RUN apt-get update && apt-get install -y \
   build-essential \
   nano \
   wget \
   git \
   subversion
 
-# Install and configure Oh My Zsh
-RUN apt-get install -y zsh
-RUN git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
-RUN cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
-RUN sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="bira"/g' ~/.zshrc
-RUN sed -i 's/  git/  z/g' ~/.zshrc
-RUN touch ~/.z
-
-# Install and configure Coin-Or Linear Programming
-RUN svn co https://projects.coin-or.org/svn/Clp/stable/1.16 /root/.local/coin-or-linear-programming
-WORKDIR "/root/.local/coin-or-linear-programming"
-RUN ./configure -C
-RUN make
-RUN make test
-RUN make install
-RUN cp bin/clp /usr/local/bin
-
-# Install LP Solve
+# 4 Install LP Solve
 RUN apt-get install -y lp-solve
 
-# Generate solvers test
+# 5 Install and configure Coin-Or Linear Programming
+RUN svn co https://projects.coin-or.org/svn/Clp/stable/1.16 /root/.local/coin-or-linear-programming
+WORKDIR "/root/.local/coin-or-linear-programming"
+RUN \
+  ./configure -C && \
+  make && \
+  make test && \
+  make install && \
+  cp bin/clp /usr/local/bin
+
+# 6 Generate solvers test
 RUN mkdir /home/solvers_example
 WORKDIR /home/solvers_example
 RUN echo "NAME          EXLP7 \n\
@@ -77,9 +67,18 @@ BOUNDS \n\
 ENDATA" > example.mps
 RUN echo "Linear Programming Test Commands\n\nCoin-Or Linear Programming\n> clp example.mps\n\nLP Solve\n> lp_solve -mps example.mps" > readme.txt
 
-# Default directory
-WORKDIR '/home'
+# n-2 Install and configure Oh My Zsh (install all with bash first for compatibility)
+RUN  \
+  apt-get update && apt-get install -y zsh && \
+  git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh && \
+  cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc && \
+  sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="bira"/g' ~/.zshrc && \
+  sed -i 's/  git/  z/g' ~/.zshrc && \
+  touch ~/.z && \
+  /bin/zsh
 
-# Start with zsh
-RUN /bin/zsh
+# n-1 Default directory
+WORKDIR /home
+
+# n Start with zsh
 ENTRYPOINT /bin/zsh

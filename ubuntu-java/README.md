@@ -7,4 +7,5 @@
   * oh-my-zsh
     * theme: bira
     * plugins: z
-* Java-Javac 1.8
+* Java 1.8
+* Javac 1.8

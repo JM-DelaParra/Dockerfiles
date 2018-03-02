@@ -1,13 +1,13 @@
 # Dockerfiles
 * ### Ubuntu 18.04
-* build-essential
+* software-properties-common
 * nano
-* wget
 * git
-* subversion
 * zsh
   * oh-my-zsh
     * theme: bira
     * plugins: z
-* lp-solve latest
-* coin-or-linear-programming 1.16
+* Java 1.8
+* Javac 1.8
+* Sbt  1.1.1
+* Scala 2.12.4
