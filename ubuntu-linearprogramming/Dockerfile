@@ -25,7 +25,7 @@ RUN \
   make install && \
   cp bin/clp /usr/local/bin
 
-# 6 Generate solvers test
+# 8 Generate solvers test
 RUN mkdir /home/solvers_example
 WORKDIR /home/solvers_example
 RUN echo "NAME          EXLP7 \n\
@@ -64,8 +64,8 @@ BOUNDS \n\
  LO BND1      COL05              0.5 \n\
  UP BND1      COL05              4.0 \n\
  UP BND1      COL08              4.3 \n\
-ENDATA" > example.mps
-RUN echo "Linear Programming Test Commands\n\nCoin-Or Linear Programming\n> clp example.mps\n\nLP Solve\n> lp_solve -mps example.mps" > readme.txt
+ENDATA" > example.mps && \
+echo "Linear Programming Test Commands\n\nCoin-Or Linear Programming\n> clp example.mps\n\nLP Solve\n> lp_solve -mps example.mps" > readme.txt
 
 # n-2 Install and configure Oh My Zsh (install all with bash first for compatibility)
 RUN  \
