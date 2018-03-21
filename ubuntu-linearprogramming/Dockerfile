@@ -12,12 +12,9 @@ RUN apt-get update && apt-get install -y \
   git \
   subversion
 
-# 4 Install LP Solve
-RUN apt-get install -y lp-solve
-
-# 5 Install and configure Coin-Or Linear Programming
-RUN svn co https://projects.coin-or.org/svn/Clp/stable/1.16 /root/.local/coin-or-linear-programming
-WORKDIR "/root/.local/coin-or-linear-programming"
+# 4 Install Coin-Or Linear Programming 1.16
+RUN svn co https://projects.coin-or.org/svn/Clp/stable/1.16 /root/.local/coin_or_linear_programming_1.16
+WORKDIR /root/.local/coin_or_linear_programming_1.16
 RUN \
   ./configure -C && \
   make && \
@@ -25,47 +22,37 @@ RUN \
   make install && \
   cp bin/clp /usr/local/bin
 
-# 8 Generate solvers test
-RUN mkdir /home/solvers_example
-WORKDIR /home/solvers_example
-RUN echo "NAME          EXLP7 \n\
-ROWS \n\
- N  OBJ \n\
- G  GUB01 \n\
- L  ROW02 \n\
- E  ROW03 \n\
- G  ROW04 \n\
- L  ROW05 \n\
-COLUMNS \n\
-    COL01     OBJ                1.0 \n\
-    COL01     GUB01              3.0   ROW05              5.6 \n\
-    COL02     GUB01              1.0   ROW02              2.0 \n\
-    COL03     OBJ                1.0 \n\
-    COL03     ROW02              1.1   ROW03              1.0 \n\
-    COL04     GUB01             -2.0   ROW04              2.8 \n\
-    COL05     OBJ                2.0 \n\
-    COL05     GUB01             -1.0   ROW05              1.0 \n\
-    COL06     ROW03              1.0 \n\
-    COL07     ROW04             -1.2 \n\
-    COL08     OBJ               -1.0 \n\
-    COL08     GUB01             -1.0   ROW05              1.9 \n\
-RHS \n\
-    RHS1      GUB01              2.5 \n\
-    RHS1      ROW02              2.1 \n\
-    RHS1      ROW03              4.0 \n\
-    RHS1      ROW04              1.8 \n\
-    RHS1      ROW05             15.0 \n\
-RANGES \n\
-    RNG1      ROW04              3.2 \n\
-    RNG1      ROW05             12.0 \n\
-BOUNDS \n\
- LO BND1      COL01              2.5 \n\
- UP BND1      COL02              4.1 \n\
- LO BND1      COL05              0.5 \n\
- UP BND1      COL05              4.0 \n\
- UP BND1      COL08              4.3 \n\
-ENDATA" > example.mps && \
-echo "Linear Programming Test Commands\n\nCoin-Or Linear Programming\n> clp example.mps\n\nLP Solve\n> lp_solve -mps example.mps" > readme.txt
+# 7 Install LP Solve 5.5.2.5
+WORKDIR /root/.local
+RUN \
+  wget https://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.5/lp_solve_5.5.2.5_exe_ux64.tar.gz && \
+  mkdir lp_solve_5.5.2.5 && \
+  tar -xvzf lp_solve_5.5.2.5_exe_ux64.tar.gz -C lp_solve_5.5.2.5 && \
+  rm lp_solve_5.5.2.5_exe_ux64.tar.gz && \
+  cp lp_solve_5.5.2.5/lp_solve /usr/local/bin && \
+  cp lp_solve_5.5.2.5/libxli_MathProg.so /usr/lib
+
+# 9 Install GLPK 4.65
+WORKDIR /root/.local
+RUN \
+  wget http://ftp.gnu.org/gnu/glpk/glpk-4.65.tar.gz && \
+  tar -xvzf glpk-4.65.tar.gz && \
+  mv glpk-4.65 glpk_4.65 && \
+  rm glpk-4.65.tar.gz
+WORKDIR /root/.local/glpk_4.65
+RUN \
+  ./configure && \
+  make && \
+  make install  && \
+  ldconfig
+
+# 13 Get solvers test
+RUN \
+  mkdir /home/solvers_example && \
+  git clone https://github.com/JM-DelaParra/Test-Files.git /home/solvers_example && \
+  rm -r /home/solvers_example/.git && \
+  rm /home/solvers_example/README.md && \
+  echo "Linear Programming Test Commands\n\nclp test.mps\nlp_solve test.lp\nlp_solve -mps test.mps\nlp_solve -rxli xli_MathProg test.mod -rxlidata test.dat\nglpsol --mps test.mps" > /home/solvers_example/readme.txt
 
 # n-2 Install and configure Oh My Zsh (install all with bash first for compatibility)
 RUN  \

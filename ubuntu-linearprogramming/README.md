@@ -9,5 +9,6 @@
   * oh-my-zsh
     * theme: bira
     * plugins: z
-* lp-solve latest
 * coin-or-linear-programming 1.16
+* lp-solve 5.5.2.5
+* glpk 4.65
