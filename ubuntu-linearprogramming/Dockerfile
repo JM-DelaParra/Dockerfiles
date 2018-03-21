@@ -46,13 +46,12 @@ RUN \
   make install  && \
   ldconfig
 
-# 13 Get solvers test
+# 13 Get test files
 RUN \
-  mkdir /home/solvers_example && \
-  git clone https://github.com/JM-DelaParra/Test-Files.git /home/solvers_example && \
-  rm -r /home/solvers_example/.git && \
-  rm /home/solvers_example/README.md && \
-  echo "Linear Programming Test Commands\n\nclp test.mps\nlp_solve test.lp\nlp_solve -mps test.mps\nlp_solve -rxli xli_MathProg test.mod -rxlidata test.dat\nglpsol --mps test.mps" > /home/solvers_example/readme.txt
+  mkdir /home/test_files && \
+  git clone https://github.com/JM-DelaParra/Test-Files.git /home/test_files && \
+  rm -r /home/test_files/.git && \
+  rm /home/test_files/README.md
 
 # n-2 Install and configure Oh My Zsh (install all with bash first for compatibility)
 RUN  \
