@@ -10,4 +10,3 @@
 * Java 1.8
 * Javac 1.8
 * Sbt  1.1.1
-* Scala 2.12.4
